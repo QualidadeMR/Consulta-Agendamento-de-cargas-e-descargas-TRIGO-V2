@@ -1,0 +1,171 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Moinho Regio — API de Qualidade",
+    "version": "1.0.0",
+    "description": "Importa e consulta a base compartilhada do painel de qualidade."
+  },
+  "host": "SEU-DOMINIO.example.com",
+  "basePath": "/",
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "securityDefinitions": {
+    "PowerAutomateToken": {
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header",
+      "description": "Informe: Bearer SEU_API_TOKEN"
+    }
+  },
+  "paths": {
+    "/api/health": {
+      "get": {
+        "operationId": "HealthCheck",
+        "summary": "Verificar API",
+        "responses": {
+          "200": {
+            "description": "API disponível",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "status": {
+                  "type": "string"
+                },
+                "service": {
+                  "type": "string"
+                },
+                "api_version": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/powerautomate/import": {
+      "post": {
+        "operationId": "ImportQualityRows",
+        "summary": "Sincronizar base completa",
+        "description": "Substitui a base pela lista completa de linhas atuais do Excel. Enviar os nomes de coluna iguais aos da planilha.",
+        "security": [
+          {
+            "PowerAutomateToken": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "type": "object",
+              "required": [
+                "rows"
+              ],
+              "properties": {
+                "source": {
+                  "type": "string"
+                },
+                "headers": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "rows": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "additionalProperties": true
+                  }
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Base atualizada",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "ok": {
+                  "type": "boolean"
+                },
+                "updated_at": {
+                  "type": "string"
+                },
+                "record_count": {
+                  "type": "integer"
+                },
+                "source": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "JSON ou formato de linhas inválido"
+          },
+          "401": {
+            "description": "Token ausente/inválido"
+          }
+        }
+      }
+    },
+    "/api/powerautomate/data": {
+      "get": {
+        "operationId": "GetQualityRows",
+        "summary": "Consultar base atual",
+        "security": [
+          {
+            "PowerAutomateToken": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Base atual",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "headers": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "rows": {
+                  "type": "array",
+                  "items": {
+                    "type": "array",
+                    "items": {}
+                  }
+                },
+                "source": {
+                  "type": "string"
+                },
+                "updated_at": {
+                  "type": "string"
+                },
+                "record_count": {
+                  "type": "integer"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token ausente/inválido"
+          }
+        }
+      }
+    }
+  }
+}
