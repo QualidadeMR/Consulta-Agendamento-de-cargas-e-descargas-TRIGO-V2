@@ -61,6 +61,12 @@ No editor de expressão do Power Automate, use `body('Listar_linhas_presentes_em
 
 ## Hospedagem e segurança
 
+### Deploy do painel estático no Netlify
+
+O arquivo `netlify.toml` configura o comando `npm run build` e a publicação da pasta `static`. O script copia o conteúdo de `public` para essa pasta durante o deploy, sem dependências adicionais. Edite o painel em `public/index.html`.
+
+Esse deploy publica apenas o painel estático. O Netlify não executa `server.js` com essa configuração; o login e os endpoints `/api/*` descritos acima precisam de um backend hospedado separadamente ou de uma adaptação para Netlify Functions.
+
 O HTML sozinho não cria uma API. Publique esta pasta em um servidor Node.js que aceite requisições HTTPS e configure as variáveis de ambiente no serviço de hospedagem. Configure `DATA_FILE` apontando para armazenamento persistente; caso contrário, algumas plataformas podem perder o arquivo JSON durante uma nova implantação ou reinicialização. Para produção corporativa, prefira hospedar em infraestrutura aprovada pela TI e limitar o acesso por rede/identidade corporativa. O login deste pacote protege a visualização do painel, e o token Bearer protege o acesso de Power Automate à API; mantenha o token em uma conexão/variável segura do fluxo.
 
 A API não cria automaticamente a URL pública. A URL final será a do domínio atribuído pela hospedagem.
