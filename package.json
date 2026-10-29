@@ -5,6 +5,7 @@
   "description": "API REST para painel de qualidade Moinho Regio e integração com Power Automate.",
   "main": "server.js",
   "scripts": {
+    "build": "node scripts/prepare-static.cjs",
     "start": "node --env-file=.env server.js",
     "start:env": "node server.js"
   },
